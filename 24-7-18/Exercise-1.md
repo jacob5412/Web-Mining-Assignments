@@ -8,7 +8,7 @@ Created on Fri Jul 24 18:10:43 2018
 
 @author: jacobjohn
 
-Write a program to tokenize
+1. Write a program to tokenize
  a) A sentence
  b) Mutliple sentences
 """
@@ -52,7 +52,7 @@ Created on Tue Jul 24 18:34:25 2018
 
 @author: jacobjohn
 
-Write a program to count the frequency of tokenzied words from two sentences
+2. Write a program to count the frequency of tokenzied words from two sentences.
 """
 #input two sentences
 print("Enter two sentences: ")
@@ -91,7 +91,7 @@ Created on Tue Jul 24 18:40:27 2018
 
 @author: jacobjohn
 
-Write a program using nltk toolkit to tokenize:
+3. Write a program using nltk toolkit to tokenize:
     a) Sentence
     b) Multiple sentences
     c) A paragraph
@@ -194,7 +194,7 @@ Created on Tue Jul 24 18:41:41 2018
 
 @author: jacobjohn
 
-Write a program to remove the stop words stemming using nltk toolkit.
+4. Write a program to remove the stop words stemming using nltk toolkit.
 """
 
 from nltk.corpus import stopwords
