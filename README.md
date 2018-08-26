@@ -1,6 +1,6 @@
 # Web Mining Assignments
 
-This repository contains all the data mining assignments for the CSE3024 lab as of Fall'18.
+This repository contains all the web mining assignments for the CSE3024 lab as of Fall'18.
 
 ## 24th July 2018 [Exercise 1](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/24-7-18/Exercise-1.ipynb)
 1. Write a program to tokenize
