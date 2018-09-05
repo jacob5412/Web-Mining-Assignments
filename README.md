@@ -20,6 +20,14 @@ This repository contains all the web mining assignments for the CSE3024 lab as o
 3. Print the frequency of words (terms) start with A,B,S,D,E. 
 4. Find maximum frequency terms/term.
 
+## 21st August 2018 [Exercise 3](https://github.com/jacobjohn2016/Web-Mining-Assignments/tree/master/21-8-18)
+1. Implement single Topical Crawler(My Spider)
+2. Then multiple crawlers Myspider1 first and then run the Myspider2 multiples times depending (sequentially) on some conditions.
+
+## 4th September 2018 [Exercise 4](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/4-9-18/Exercise_4.ipynb)
+1. Coding Techniques
+2. TF-IDF
+
 ## Authors
 
 * **Jacob John** - *Initial work* - [jacobjohn2016](github.com/jacobjohn2016/)
