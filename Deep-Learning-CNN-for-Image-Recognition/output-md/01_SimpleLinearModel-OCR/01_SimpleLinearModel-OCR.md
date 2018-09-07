@@ -1,6 +1,7 @@
 
 # Simple Linear Model - OCR
 By Gaetano Bonofiglio, Veronica Iovinella
+Adopted by: Jacob John, Rajdeepa
 
 ## Introduction
 We'll start by developing a simple linear model for classification of handwritten digits (OCR) using MNIST data-set and then plot the results. This will later be compared with a Convolutional Neural Network for the same task.
