@@ -28,7 +28,7 @@ This repository contains all the web mining assignments for the CSE3024 lab as o
 1. Coding Techniques
 2. TF-IDF
 
-## 11th September 2018 [Exercise 5]()
+## 11th September 2018 [Exercise 5](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/11-9-18/Exercise%205.ipynb)
 Estimate the page rank for the given directed graph representing web of six pages and damping factor is 0.9 and Max. Iterations are 2.
 * First find adjacency matrix
 * Find stochastic matrix
