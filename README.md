@@ -35,6 +35,11 @@ Estimate the page rank for the given directed graph representing web of six page
 * Find transpose
 * Calculate page rank
 
+## 18th September 2018 [Exercise 6](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/18-9-18/Exercise-6.ipynb)
+1. TF-IDF
+2. Cosine Similarity 
+3. Page Rank
+4. Goloumb Coding
 
 ## Authors
 
