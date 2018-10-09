@@ -41,7 +41,7 @@ Estimate the page rank for the given directed graph representing web of six page
 3. Page Rank
 4. Goloumb Coding
 
-## 10th September 2018 [Exercise 7](http://rpubs.com/jacobjohn2016/WMAssessment4)
+## 10th September 2018 [Exercise 7](http://rpubs.com/jacobjohn2016/WM4)
 1. Naive Bayes
     * [Dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+cancer+%28Risk+Factors%29)
     * Find accuracy, AUC and confusion matrix
