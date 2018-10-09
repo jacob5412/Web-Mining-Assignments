@@ -1,0 +1,194 @@
+---
+title: "Assessment 4"
+output: statsr:::statswithr_lab
+author: Jacob John
+---
+
+<div id="instructions">
+Complete all **Exercises**, and submit answers to **VtopBeta**
+</div>
+
+## Datasets
+
+```{r}
+### load packages
+library(caret)
+library(knitr)
+```
+
+```{r echo = FALSE, results = 'asis'}
+
+kable(iris[1:5,1:5], caption = "Iris dataset for training and testing")
+
+```
+
+## Split it into training set and testing set and validation set
+
+```{r data, message = FALSE}
+ir_data=iris
+set.seed(100)
+head(ir_data)
+intrain <- createDataPartition(y = ir_data$Species, p= 0.7, list = FALSE)
+training<-iris[intrain,]
+testing<-ir_data[-intrain,]
+dim(training);dim(testing)
+summary(ir_data)
+training[["Species"]] = factor(training[["Species"]])
+trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+```
+
+The results of confusion matrix show that this time the accuracy on the test set is __95.56%__.
+
+## using e1071
+```{r naive, message = FALSE}
+library(e1071)
+model <- naiveBayes(Species ~., data = training)
+class(model)
+summary(model)
+print(model)
+preds <- predict(model, newdata = training)
+table(preds,training$Species)
+(35+33+32)/(35+33+2+32+3)#change this according to the diagonal element of the previous statement result 
+```
+
+Accuracy is __95.2381%__.
+
+## Using mlbench
+```{r}
+library(mlbench)
+data("HouseVotes84")
+data(HouseVotes84, package = "mlbench")
+model <- naiveBayes(Class ~ ., data = HouseVotes84)
+predict(model, HouseVotes84[1:10,])
+predict(model, HouseVotes84[1:10,], type = "raw")
+pred <- predict(model, HouseVotes84)
+table(pred, HouseVotes84$Class)
+(238+155)/(238+155+29+13)
+```
+
+Accuracy is __90.34483%__.
+
+```{r}
+## using laplace smoothing:
+model <- naiveBayes(Class ~ ., data = HouseVotes84, laplace = 3)
+pred <- predict(model, HouseVotes84[,-1])
+table(pred, HouseVotes84$Class)
+(237+156)/(237+156+12+30)
+```
+
+Accuracy is still __90.34483%__.
+
+## Using a contingency table
+```{r}
+data(Titanic)
+m <- naiveBayes(Survived ~ ., data = Titanic)
+m
+predict(m, as.data.frame(Titanic))
+```
+
+
+## Sentiment Analysis of Movie Reviews
+```{r}
+# Load additional libraries
+library(tm)
+library(RTextTools)
+library(dplyr)
+# Library for parallel processing
+library(doMC)
+registerDoMC(cores=detectCores())  # Use all available cores
+```
+
+### Reading the data
+```{r}
+df<- read.csv("movie-pang02.csv", stringsAsFactors = FALSE)
+glimpse(df)
+# Randomize the dataset
+set.seed(1)
+df <- df[sample(nrow(df)), ]
+df <- df[sample(nrow(df)), ]
+glimpse(df)
+# Convert the 'class' variable from character to factor.
+df$class <- as.factor(df$class)
+```
+
+### Bag of Words Tokenisation
+```{r}
+corpus <- Corpus(VectorSource(df$text))
+corpus
+inspect(corpus[1:3])
+```
+
+### Data Cleanup
+```{r}
+# Use dplyr's  %>% (pipe) utility to do this neatly.
+corpus.clean <- corpus %>%
+  tm_map(content_transformer(tolower)) %>% 
+  tm_map(removePunctuation) %>%
+  tm_map(removeNumbers) %>%
+  tm_map(removeWords, stopwords(kind="en")) %>%
+  tm_map(stripWhitespace)
+```
+
+### Document Term Matrix
+```{r}
+dtm <- DocumentTermMatrix(corpus.clean)
+inspect(dtm[40:50, 10:15])
+```
+
+### Paritioning
+```{r}
+df.train <- df[1:1500,]
+df.test <- df[1501:2000,]
+
+dtm.train <- dtm[1:1500,]
+dtm.test <- dtm[1501:2000,]
+
+corpus.clean.train <- corpus.clean[1:1500]
+corpus.clean.test <- corpus.clean[1501:2000]
+```
+
+### Feature set selection
+```{r}
+dim(dtm.train)
+fivefreq <- findFreqTerms(dtm.train, 5)
+length((fivefreq))
+
+# Use only 5 most frequent words (fivefreq) to build the DTM
+dtm.train.nb <- DocumentTermMatrix(corpus.clean.train, control=list(dictionary = fivefreq))
+dim(dtm.train.nb)
+dtm.test.nb <- DocumentTermMatrix(corpus.clean.test, control=list(dictionary = fivefreq))
+dim(dtm.train.nb)
+```
+
+### Boolean feature Multinomial Naive Bayes
+```{r}
+# Function to convert the word frequencies to yes (presence) and no (absence) labels
+convert_count <- function(x) {
+  y <- ifelse(x > 0, 1,0)
+  y <- factor(y, levels=c(0,1), labels=c("No", "Yes"))
+  y
+}
+
+# Apply the convert_count function to get final training and testing DTMs
+trainNB <- apply(dtm.train.nb, 2, convert_count)
+testNB <- apply(dtm.test.nb, 2, convert_count)
+
+# Train the classifier
+system.time( classifier <- naiveBayes(trainNB, df.train$class, laplace = 1) )
+
+# Use the NB classifier we built to make predictions on the test set.
+system.time( pred <- predict(classifier, newdata=testNB) )
+
+# Create a truth table by tabulating the predicted class labels with the actual class labels 
+table("Predictions"= pred,  "Actual" = df.test$class )
+```
+
+### Confusion Matrix
+```{r}
+conf.mat <- confusionMatrix(pred, df.test$class)
+conf.mat
+conf.mat$byClass
+conf.mat$overall
+# Prediction Accuracy
+conf.mat$overall['Accuracy']
+```
