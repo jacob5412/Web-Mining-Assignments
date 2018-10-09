@@ -86,6 +86,44 @@ m
 predict(m, as.data.frame(Titanic))
 ```
 
+## Cervical Cancer
+```{r}
+cancer <- read.csv("risk_factors_cervical_cancer.csv")
+cancer[cancer=='?'] <- NA
+cancer[["Dx.Cancer"]] = factor(cancer[["Dx.Cancer"]],ordered = TRUE)
+
+#Splitting Dataset
+intrain <- createDataPartition(y = cancer$Dx.Cancer, p = 0.7, list = FALSE)
+training<-cancer[intrain,]
+testing<-cancer[-intrain,]
+dim(training);dim(testing)
+summary(cancer)
+trctrl <- trainControl(method = "repeatedcv", number = 2, repeats = 3)
+
+#Training Model
+model <- naiveBayes(Dx.Cancer ~ ., data = training)
+class(model)
+summary(model)
+print(model)
+
+#Testing Model
+preds <- predict(model, newdata = testing)
+
+#Confusion Matrix
+conmat <- table(preds,testing$Dx.Cancer)
+
+#Accuracy
+accuracy <- (conmat[1]+conmat[4])/(conmat[1]+conmat[2]+conmat[3]+conmat[4])*100
+accuracy
+
+#ROC
+library(pROC)
+library(rowr)
+prediction <- rev(seq_along(cancer$Dx.Cancer))
+prediction[1:len(preds)] <- mean(as.numeric(preds))
+roc_obj <- roc(cancer$Dx.Cancer,prediction)
+auc(roc_obj)
+```
 
 ## Sentiment Analysis of Movie Reviews
 ```{r}
@@ -191,4 +229,32 @@ conf.mat$byClass
 conf.mat$overall
 # Prediction Accuracy
 conf.mat$overall['Accuracy']
+```
+
+## Apriori
+```{r}
+library(arules)
+#Data Preprocessing
+load("dataset.RData")
+summary(dataset)
+itemFrequencyPlot(dataset,topN=10)
+#Apriori
+rules <- apriori(data=dataset,parameter=list(support=0.60,confidence=0.80))
+summary(rules)
+#Data Visualization
+inspect(sort(rules,by='lift')[1:10])
+
+```
+
+## K-means
+```{r}
+library(ggplot2)
+set.seed(20)
+irisCluster <- kmeans(iris[,3:4],3,nstart=20)
+irisCluster
+#Comparing clusters with the species
+table(irisCluster$cluster, iris$Species)
+irisCluster$cluster <- as.factor(irisCluster$cluster)
+ggplot(iris, aes(Petal.Length, Petal.Width, color = irisCluster$cluster)) + geom_point()
+
 ```

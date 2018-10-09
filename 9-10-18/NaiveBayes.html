@@ -389,6 +389,523 @@ m</code></pre></div>
 ## [18] No  No  No  Yes Yes Yes Yes No  No  No  No  Yes Yes Yes Yes
 ## Levels: No Yes</code></pre>
 </div>
+<div id="cervical-cancer" class="section level2">
+<h2>Cervical Cancer</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cancer &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;risk_factors_cervical_cancer.csv&quot;</span>)
+cancer[cancer<span class="op">==</span><span class="st">'?'</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>
+cancer[[<span class="st">&quot;Dx.Cancer&quot;</span>]] =<span class="st"> </span><span class="kw">factor</span>(cancer[[<span class="st">&quot;Dx.Cancer&quot;</span>]],<span class="dt">ordered =</span> <span class="ot">TRUE</span>)
+
+<span class="co">#Splitting Dataset</span>
+intrain &lt;-<span class="st"> </span><span class="kw">createDataPartition</span>(<span class="dt">y =</span> cancer<span class="op">$</span>Dx.Cancer, <span class="dt">p =</span> <span class="fl">0.7</span>, <span class="dt">list =</span> <span class="ot">FALSE</span>)
+training&lt;-cancer[intrain,]
+testing&lt;-cancer[<span class="op">-</span>intrain,]
+<span class="kw">dim</span>(training);<span class="kw">dim</span>(testing)</code></pre></div>
+<pre><code>## [1] 601  36</code></pre>
+<pre><code>## [1] 257  36</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cancer)</code></pre></div>
+<pre><code>##       Age        Number.of.sexual.partners First.sexual.intercourse
+##  Min.   :13.00   2.0    :272               15.0   :163             
+##  1st Qu.:20.00   3.0    :208               17.0   :151             
+##  Median :25.00   1.0    :206               18.0   :137             
+##  Mean   :26.82   4.0    : 78               16.0   :121             
+##  3rd Qu.:32.00   5.0    : 44               14.0   : 79             
+##  Max.   :84.00   (Other): 24               (Other):200             
+##                  NA's   : 26               NA's   :  7             
+##  Num.of.pregnancies  Smokes        Smokes..years.   Smokes..packs.year.
+##  1.0    :270        ?   :  0   0.0        :722    0.0         :722     
+##  2.0    :240        0.0 :722   1.266972909: 15    0.5132021277: 18     
+##  3.0    :139        1.0 :123   5.0        :  9    1.0         :  6     
+##  4.0    : 74        NA's: 13   9.0        :  9    3.0         :  5     
+##  5.0    : 35                   1.0        :  8    0.05        :  4     
+##  (Other): 44                   (Other)    : 82    (Other)     : 90     
+##  NA's   : 56                   NA's       : 13    NA's        : 13     
+##  Hormonal.Contraceptives Hormonal.Contraceptives..years.   IUD     
+##  ?   :  0                0.0    :269                     ?   :  0  
+##  0.0 :269                1.0    : 77                     0.0 :658  
+##  1.0 :481                0.25   : 41                     1.0 : 83  
+##  NA's:108                2.0    : 40                     NA's:117  
+##                          3.0    : 39                               
+##                          (Other):284                               
+##                          NA's   :108                               
+##   IUD..years.    STDs     STDs..number. STDs.condylomatosis
+##  0.0    :658   ?   :  0   ?   :  0      ?   :  0           
+##  3.0    : 11   0.0 :674   0.0 :674      0.0 :709           
+##  2.0    : 10   1.0 : 79   1.0 : 34      1.0 : 44           
+##  5.0    :  9   NA's:105   2.0 : 37      NA's:105           
+##  1.0    :  8              3.0 :  7                         
+##  (Other): 45              4.0 :  1                         
+##  NA's   :117              NA's:105                         
+##  STDs.cervical.condylomatosis STDs.vaginal.condylomatosis
+##  ?   :  0                     ?   :  0                   
+##  0.0 :753                     0.0 :749                   
+##  NA's:105                     1.0 :  4                   
+##                               NA's:105                   
+##                                                          
+##                                                          
+##                                                          
+##  STDs.vulvo.perineal.condylomatosis STDs.syphilis
+##  ?   :  0                           ?   :  0     
+##  0.0 :710                           0.0 :735     
+##  1.0 : 43                           1.0 : 18     
+##  NA's:105                           NA's:105     
+##                                                  
+##                                                  
+##                                                  
+##  STDs.pelvic.inflammatory.disease STDs.genital.herpes
+##  ?   :  0                         ?   :  0           
+##  0.0 :752                         0.0 :752           
+##  1.0 :  1                         1.0 :  1           
+##  NA's:105                         NA's:105           
+##                                                      
+##                                                      
+##                                                      
+##  STDs.molluscum.contagiosum STDs.AIDS  STDs.HIV   STDs.Hepatitis.B
+##  ?   :  0                   ?   :  0   ?   :  0   ?   :  0        
+##  0.0 :752                   0.0 :753   0.0 :735   0.0 :752        
+##  1.0 :  1                   NA's:105   1.0 : 18   1.0 :  1        
+##  NA's:105                              NA's:105   NA's:105        
+##                                                                   
+##                                                                   
+##                                                                   
+##  STDs.HPV   STDs..Number.of.diagnosis STDs..Time.since.first.diagnosis
+##  ?   :  0   Min.   :0.00000           1.0    : 15                     
+##  0.0 :751   1st Qu.:0.00000           3.0    : 10                     
+##  1.0 :  2   Median :0.00000           2.0    :  9                     
+##  NA's:105   Mean   :0.08741           4.0    :  6                     
+##             3rd Qu.:0.00000           7.0    :  5                     
+##             Max.   :3.00000           (Other): 26                     
+##                                       NA's   :787                     
+##  STDs..Time.since.last.diagnosis Dx.Cancer     Dx.CIN       
+##  1.0    : 17                     0:840     Min.   :0.00000  
+##  2.0    : 10                     1: 18     1st Qu.:0.00000  
+##  3.0    :  9                               Median :0.00000  
+##  4.0    :  6                               Mean   :0.01049  
+##  7.0    :  5                               3rd Qu.:0.00000  
+##  (Other): 24                               Max.   :1.00000  
+##  NA's   :787                                                
+##      Dx.HPV              Dx            Hinselmann         Schiller      
+##  Min.   :0.00000   Min.   :0.00000   Min.   :0.00000   Min.   :0.00000  
+##  1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.00000  
+##  Median :0.00000   Median :0.00000   Median :0.00000   Median :0.00000  
+##  Mean   :0.02098   Mean   :0.02797   Mean   :0.04079   Mean   :0.08625  
+##  3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.00000  
+##  Max.   :1.00000   Max.   :1.00000   Max.   :1.00000   Max.   :1.00000  
+##                                                                         
+##     Citology           Biopsy      
+##  Min.   :0.00000   Min.   :0.0000  
+##  1st Qu.:0.00000   1st Qu.:0.0000  
+##  Median :0.00000   Median :0.0000  
+##  Mean   :0.05128   Mean   :0.0641  
+##  3rd Qu.:0.00000   3rd Qu.:0.0000  
+##  Max.   :1.00000   Max.   :1.0000  
+## </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">trctrl &lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;repeatedcv&quot;</span>, <span class="dt">number =</span> <span class="dv">2</span>, <span class="dt">repeats =</span> <span class="dv">3</span>)
+
+<span class="co">#Training Model</span>
+model &lt;-<span class="st"> </span><span class="kw">naiveBayes</span>(Dx.Cancer <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> training)
+<span class="kw">class</span>(model)</code></pre></div>
+<pre><code>## [1] &quot;naiveBayes&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(model)</code></pre></div>
+<pre><code>##         Length Class  Mode     
+## apriori  2     table  numeric  
+## tables  35     -none- list     
+## levels   2     -none- character
+## call     4     -none- call</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(model)</code></pre></div>
+<pre><code>## 
+## Naive Bayes Classifier for Discrete Predictors
+## 
+## Call:
+## naiveBayes.default(x = X, y = Y, laplace = laplace)
+## 
+## A-priori probabilities:
+## Y
+##          0          1 
+## 0.97836938 0.02163062 
+## 
+## Conditional probabilities:
+##    Age
+## Y       [,1]     [,2]
+##   0 26.46088 8.100950
+##   1 33.84615 7.787235
+## 
+##    Number.of.sexual.partners
+## Y             ?         1.0        10.0        15.0         2.0
+##   0 0.000000000 0.256183746 0.001766784 0.000000000 0.330388693
+##   1 0.000000000 0.076923077 0.000000000 0.000000000 0.307692308
+##    Number.of.sexual.partners
+## Y          28.0         3.0         4.0         5.0         6.0
+##   0 0.001766784 0.233215548 0.098939929 0.047703180 0.008833922
+##   1 0.000000000 0.461538462 0.000000000 0.153846154 0.000000000
+##    Number.of.sexual.partners
+## Y           7.0         8.0         9.0
+##   0 0.012367491 0.007067138 0.001766784
+##   1 0.000000000 0.000000000 0.000000000
+## 
+##    First.sexual.intercourse
+## Y             ?        10.0        11.0        12.0        13.0
+##   0 0.000000000 0.001718213 0.000000000 0.008591065 0.032646048
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    First.sexual.intercourse
+## Y          14.0        15.0        16.0        17.0        18.0
+##   0 0.097938144 0.199312715 0.158075601 0.173539519 0.147766323
+##   1 0.076923077 0.076923077 0.076923077 0.000000000 0.230769231
+##    First.sexual.intercourse
+## Y          19.0        20.0        21.0        22.0        23.0
+##   0 0.065292096 0.034364261 0.024054983 0.008591065 0.010309278
+##   1 0.384615385 0.153846154 0.000000000 0.000000000 0.000000000
+##    First.sexual.intercourse
+## Y          24.0        25.0        26.0        27.0        28.0
+##   0 0.006872852 0.001718213 0.006872852 0.006872852 0.005154639
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    First.sexual.intercourse
+## Y          29.0        32.0
+##   0 0.008591065 0.001718213
+##   1 0.000000000 0.000000000
+## 
+##    Num.of.pregnancies
+## Y             ?         0.0         1.0        10.0        11.0
+##   0 0.000000000 0.025179856 0.327338129 0.001798561 0.000000000
+##   1 0.000000000 0.000000000 0.230769231 0.000000000 0.000000000
+##    Num.of.pregnancies
+## Y           2.0         3.0         4.0         5.0         6.0
+##   0 0.318345324 0.163669065 0.091726619 0.035971223 0.025179856
+##   1 0.307692308 0.230769231 0.153846154 0.076923077 0.000000000
+##    Num.of.pregnancies
+## Y           7.0         8.0
+##   0 0.007194245 0.003597122
+##   1 0.000000000 0.000000000
+## 
+##    Smokes
+## Y           ?       0.0       1.0
+##   0 0.0000000 0.8603448 0.1396552
+##   1 0.0000000 0.8461538 0.1538462
+## 
+##    Smokes..years.
+## Y             ?         0.0        0.16         0.5         1.0
+##   0 0.000000000 0.860344828 0.001724138 0.005172414 0.006896552
+##   1 0.000000000 0.846153846 0.000000000 0.000000000 0.000000000
+##    Smokes..years.
+## Y   1.266972909        10.0        11.0        12.0        13.0
+##   0 0.020689655 0.005172414 0.005172414 0.005172414 0.001724138
+##   1 0.000000000 0.000000000 0.076923077 0.000000000 0.000000000
+##    Smokes..years.
+## Y          14.0        15.0        16.0        18.0        19.0
+##   0 0.005172414 0.003448276 0.006896552 0.001724138 0.005172414
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..years.
+## Y           2.0        20.0        21.0        22.0        24.0
+##   0 0.005172414 0.000000000 0.000000000 0.003448276 0.000000000
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..years.
+## Y          28.0         3.0        32.0        34.0        37.0
+##   0 0.001724138 0.008620690 0.000000000 0.000000000 0.000000000
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.076923077
+##    Smokes..years.
+## Y           4.0         5.0         6.0         7.0         8.0
+##   0 0.006896552 0.010344828 0.003448276 0.008620690 0.008620690
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..years.
+## Y           9.0
+##   0 0.008620690
+##   1 0.000000000
+## 
+##    Smokes..packs.year.
+## Y             ?         0.0       0.001       0.003       0.025
+##   0 0.000000000 0.860344828 0.001724138 0.000000000 0.001724138
+##   1 0.000000000 0.846153846 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y          0.04        0.05         0.1        0.15        0.16
+##   0 0.001724138 0.005172414 0.000000000 0.001724138 0.001724138
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.076923077
+##    Smokes..packs.year.
+## Y           0.2        0.25         0.3        0.32        0.37
+##   0 0.005172414 0.001724138 0.001724138 0.000000000 0.000000000
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y           0.4        0.45         0.5 0.5132021277         0.7
+##   0 0.001724138 0.000000000 0.000000000  0.025862069 0.000000000
+##   1 0.000000000 0.000000000 0.000000000  0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y          0.75         0.8         0.9         1.0         1.2
+##   0 0.005172414 0.001724138 0.000000000 0.005172414 0.003448276
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y          1.25         1.3        1.35         1.4         1.6
+##   0 0.000000000 0.001724138 0.001724138 0.003448276 0.001724138
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y          1.65        12.0        15.0        19.0         2.0
+##   0 0.000000000 0.005172414 0.000000000 0.001724138 0.003448276
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y           2.1         2.2        2.25         2.4         2.5
+##   0 0.001724138 0.001724138 0.000000000 0.003448276 0.001724138
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y           2.6         2.7        2.75         2.8        21.0
+##   0 0.000000000 0.001724138 0.001724138 0.001724138 0.000000000
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y          22.0         3.0         3.3         3.4         3.5
+##   0 0.001724138 0.008620690 0.001724138 0.000000000 0.001724138
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y          37.0         4.0         4.5         4.8         5.0
+##   0 0.000000000 0.001724138 0.001724138 0.000000000 0.003448276
+##   1 0.076923077 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y           5.5         5.7         6.0         7.0         7.5
+##   0 0.001724138 0.001724138 0.005172414 0.003448276 0.001724138
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Smokes..packs.year.
+## Y           7.6         8.0         9.0
+##   0 0.001724138 0.001724138 0.003448276
+##   1 0.000000000 0.000000000 0.000000000
+## 
+##    Hormonal.Contraceptives
+## Y           ?       0.0       1.0
+##   0 0.0000000 0.3517787 0.6482213
+##   1 0.0000000 0.1538462 0.8461538
+## 
+##    Hormonal.Contraceptives..years.
+## Y             ?         0.0        0.08        0.16        0.17
+##   0 0.000000000 0.351778656 0.027667984 0.017786561 0.001976285
+##   1 0.000000000 0.153846154 0.076923077 0.076923077 0.000000000
+##    Hormonal.Contraceptives..years.
+## Y          0.25        0.33        0.41        0.42         0.5
+##   0 0.059288538 0.013833992 0.001976285 0.005928854 0.033596838
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Hormonal.Contraceptives..years.
+## Y          0.58        0.66        0.67        0.75         1.0
+##   0 0.007905138 0.007905138 0.001976285 0.005928854 0.110671937
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.153846154
+##    Hormonal.Contraceptives..years.
+## Y           1.5        10.0        11.0        12.0        13.0
+##   0 0.003952569 0.015810277 0.003952569 0.003952569 0.003952569
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Hormonal.Contraceptives..years.
+## Y          14.0        15.0        16.0        17.0        19.0
+##   0 0.001976285 0.005928854 0.001976285 0.001976285 0.003952569
+##   1 0.000000000 0.076923077 0.076923077 0.000000000 0.000000000
+##    Hormonal.Contraceptives..years.
+## Y           2.0 2.282200521         2.5        20.0        22.0
+##   0 0.051383399 0.003952569 0.001976285 0.005928854 0.000000000
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    Hormonal.Contraceptives..years.
+## Y           3.0         3.5        30.0         4.0         4.5
+##   0 0.055335968 0.001976285 0.001976285 0.041501976 0.001976285
+##   1 0.153846154 0.000000000 0.000000000 0.000000000 0.000000000
+##    Hormonal.Contraceptives..years.
+## Y           5.0         6.0         6.5         7.0         8.0
+##   0 0.047430830 0.031620553 0.001976285 0.023715415 0.021739130
+##   1 0.000000000 0.153846154 0.000000000 0.000000000 0.000000000
+##    Hormonal.Contraceptives..years.
+## Y           9.0
+##   0 0.011857708
+##   1 0.076923077
+## 
+##    IUD
+## Y            ?        0.0        1.0
+##   0 0.00000000 0.90039841 0.09960159
+##   1 0.00000000 0.61538462 0.38461538
+## 
+##    IUD..years.
+## Y             ?         0.0        0.08        0.16        0.17
+##   0 0.000000000 0.900398406 0.003984064 0.001992032 0.001992032
+##   1 0.000000000 0.615384615 0.000000000 0.000000000 0.000000000
+##    IUD..years.
+## Y          0.25        0.33        0.41         0.5        0.58
+##   0 0.000000000 0.001992032 0.000000000 0.001992032 0.000000000
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    IUD..years.
+## Y          0.91         1.0         1.5        10.0        11.0
+##   0 0.000000000 0.011952191 0.000000000 0.000000000 0.003984064
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    IUD..years.
+## Y          12.0        15.0        17.0        19.0         2.0
+##   0 0.001992032 0.000000000 0.001992032 0.001992032 0.013944223
+##   1 0.000000000 0.000000000 0.000000000 0.000000000 0.000000000
+##    IUD..years.
+## Y           3.0         4.0         5.0         6.0         7.0
+##   0 0.009960159 0.007968127 0.011952191 0.003984064 0.005976096
+##   1 0.153846154 0.076923077 0.000000000 0.000000000 0.076923077
+##    IUD..years.
+## Y           8.0         9.0
+##   0 0.009960159 0.001992032
+##   1 0.076923077 0.000000000
+## 
+##    STDs
+## Y           ?       0.0       1.0
+##   0 0.0000000 0.8954635 0.1045365
+##   1 0.0000000 0.8461538 0.1538462
+## 
+##    STDs..number.
+## Y             ?         0.0         1.0         2.0         3.0
+##   0 0.000000000 0.895463511 0.043392505 0.051282051 0.007889546
+##   1 0.000000000 0.846153846 0.153846154 0.000000000 0.000000000
+##    STDs..number.
+## Y           4.0
+##   0 0.001972387
+##   1 0.000000000
+## 
+##    STDs.condylomatosis
+## Y           ?       0.0       1.0
+##   0 0.0000000 0.9408284 0.0591716
+##   1 0.0000000 1.0000000 0.0000000
+## 
+##    STDs.cervical.condylomatosis
+## Y   ? 0.0
+##   0 0   1
+##   1 0   1
+## 
+##    STDs.vaginal.condylomatosis
+## Y            ?        0.0        1.0
+##   0 0.00000000 0.99408284 0.00591716
+##   1 0.00000000 1.00000000 0.00000000
+## 
+##    STDs.vulvo.perineal.condylomatosis
+## Y            ?        0.0        1.0
+##   0 0.00000000 0.94280079 0.05719921
+##   1 0.00000000 1.00000000 0.00000000
+## 
+##    STDs.syphilis
+## Y            ?        0.0        1.0
+##   0 0.00000000 0.97633136 0.02366864
+##   1 0.00000000 1.00000000 0.00000000
+## 
+##    STDs.pelvic.inflammatory.disease
+## Y             ?         0.0         1.0
+##   0 0.000000000 0.998027613 0.001972387
+##   1 0.000000000 1.000000000 0.000000000
+## 
+##    STDs.genital.herpes
+## Y             ?         0.0         1.0
+##   0 0.000000000 0.998027613 0.001972387
+##   1 0.000000000 1.000000000 0.000000000
+## 
+##    STDs.molluscum.contagiosum
+## Y             ?         0.0         1.0
+##   0 0.000000000 0.998027613 0.001972387
+##   1 0.000000000 1.000000000 0.000000000
+## 
+##    STDs.AIDS
+## Y   ? 0.0
+##   0 0   1
+##   1 0   1
+## 
+##    STDs.HIV
+## Y            ?        0.0        1.0
+##   0 0.00000000 0.97633136 0.02366864
+##   1 0.00000000 1.00000000 0.00000000
+## 
+##    STDs.Hepatitis.B
+## Y             ?         0.0         1.0
+##   0 0.000000000 0.998027613 0.001972387
+##   1 0.000000000 1.000000000 0.000000000
+## 
+##    STDs.HPV
+## Y           ?       0.0       1.0
+##   0 0.0000000 1.0000000 0.0000000
+##   1 0.0000000 0.8461538 0.1538462
+## 
+##    STDs..Number.of.diagnosis
+## Y         [,1]      [,2]
+##   0 0.08843537 0.3072141
+##   1 0.07692308 0.2773501
+## 
+##    STDs..Time.since.first.diagnosis
+## Y            ?        1.0       10.0       11.0       12.0       15.0
+##   0 0.00000000 0.20408163 0.02040816 0.04081633 0.00000000 0.02040816
+##   1 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+##    STDs..Time.since.first.diagnosis
+## Y         16.0       18.0       19.0        2.0       21.0       22.0
+##   0 0.04081633 0.02040816 0.04081633 0.14285714 0.04081633 0.02040816
+##   1 1.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+##    STDs..Time.since.first.diagnosis
+## Y          3.0        4.0        5.0        6.0        7.0        8.0
+##   0 0.14285714 0.08163265 0.04081633 0.02040816 0.06122449 0.04081633
+##   1 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+##    STDs..Time.since.first.diagnosis
+## Y          9.0
+##   0 0.02040816
+##   1 0.00000000
+## 
+##    STDs..Time.since.last.diagnosis
+## Y            ?        1.0       10.0       11.0       12.0       15.0
+##   0 0.00000000 0.24489796 0.02040816 0.04081633 0.00000000 0.02040816
+##   1 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+##    STDs..Time.since.last.diagnosis
+## Y         16.0       18.0       19.0        2.0       21.0       22.0
+##   0 0.04081633 0.02040816 0.02040816 0.14285714 0.04081633 0.02040816
+##   1 1.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+##    STDs..Time.since.last.diagnosis
+## Y          3.0        4.0        5.0        6.0        7.0        8.0
+##   0 0.12244898 0.08163265 0.04081633 0.02040816 0.06122449 0.04081633
+##   1 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+##    STDs..Time.since.last.diagnosis
+## Y          9.0
+##   0 0.02040816
+##   1 0.00000000
+## 
+##    Dx.CIN
+## Y         [,1]      [,2]
+##   0 0.01020408 0.1005841
+##   1 0.00000000 0.0000000
+## 
+##    Dx.HPV
+## Y         [,1]      [,2]
+##   0 0.00170068 0.0412393
+##   1 0.84615385 0.3755338
+## 
+##    Dx
+## Y         [,1]      [,2]
+##   0 0.01020408 0.1005841
+##   1 0.69230769 0.4803845
+## 
+##    Hinselmann
+## Y         [,1]      [,2]
+##   0 0.03061224 0.1724114
+##   1 0.23076923 0.4385290
+## 
+##    Schiller
+## Y         [,1]      [,2]
+##   0 0.06632653 0.2490639
+##   1 0.30769231 0.4803845
+## 
+##    Citology
+## Y         [,1]      [,2]
+##   0 0.04251701 0.2019373
+##   1 0.15384615 0.3755338
+## 
+##    Biopsy
+## Y         [,1]      [,2]
+##   0 0.05102041 0.2202267
+##   1 0.30769231 0.4803845</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Testing Model</span>
+preds &lt;-<span class="st"> </span><span class="kw">predict</span>(model, <span class="dt">newdata =</span> testing)
+
+<span class="co">#Confusion Matrix</span>
+conmat &lt;-<span class="st"> </span><span class="kw">table</span>(preds,testing<span class="op">$</span>Dx.Cancer)
+
+<span class="co">#Accuracy</span>
+accuracy &lt;-<span class="st"> </span>(conmat[<span class="dv">1</span>]<span class="op">+</span>conmat[<span class="dv">4</span>])<span class="op">/</span>(conmat[<span class="dv">1</span>]<span class="op">+</span>conmat[<span class="dv">2</span>]<span class="op">+</span>conmat[<span class="dv">3</span>]<span class="op">+</span>conmat[<span class="dv">4</span>])<span class="op">*</span><span class="dv">100</span>
+
+<span class="co">#ROC</span>
+<span class="kw">library</span>(pROC)</code></pre></div>
+<pre><code>## Type 'citation(&quot;pROC&quot;)' for a citation.</code></pre>
+<pre><code>## 
+## Attaching package: 'pROC'</code></pre>
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     cov, smooth, var</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rowr)
+prediction &lt;-<span class="st"> </span><span class="kw">rev</span>(<span class="kw">seq_along</span>(cancer<span class="op">$</span>Dx.Cancer))
+prediction[<span class="dv">1</span><span class="op">:</span><span class="kw">len</span>(preds)] &lt;-<span class="st"> </span><span class="kw">mean</span>(<span class="kw">as.numeric</span>(preds))
+roc_obj &lt;-<span class="st"> </span><span class="kw">roc</span>(cancer<span class="op">$</span>Dx.Cancer,prediction)
+<span class="kw">auc</span>(roc_obj)</code></pre></div>
+<pre><code>## Area under the curve: 0.6005</code></pre>
+</div>
 <div id="sentiment-analysis-of-movie-reviews" class="section level2">
 <h2>Sentiment Analysis of Movie Reviews</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Load additional libraries</span>
@@ -410,6 +927,9 @@ m</code></pre></div>
 <pre><code>## Warning: package 'dplyr' was built under R version 3.5.1</code></pre>
 <pre><code>## 
 ## Attaching package: 'dplyr'</code></pre>
+<pre><code>## The following objects are masked from 'package:rowr':
+## 
+##     coalesce, count</code></pre>
 <pre><code>## The following objects are masked from 'package:stats':
 ## 
 ##     filter, lag</code></pre>
@@ -543,11 +1063,11 @@ testNB &lt;-<span class="st"> </span><span class="kw">apply</span>(dtm.test.nb, 
 <span class="co"># Train the classifier</span>
 <span class="kw">system.time</span>( classifier &lt;-<span class="st"> </span><span class="kw">naiveBayes</span>(trainNB, df.train<span class="op">$</span>class, <span class="dt">laplace =</span> <span class="dv">1</span>) )</code></pre></div>
 <pre><code>##    user  system elapsed 
-##   9.563   0.804  11.693</code></pre>
+##   6.097   0.415   6.545</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use the NB classifier we built to make predictions on the test set.</span>
 <span class="kw">system.time</span>( pred &lt;-<span class="st"> </span><span class="kw">predict</span>(classifier, <span class="dt">newdata=</span>testNB) )</code></pre></div>
 <pre><code>##    user  system elapsed 
-## 287.448   8.662 365.658</code></pre>
+## 174.210   2.749 178.709</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a truth table by tabulating the predicted class labels with the actual class labels </span>
 <span class="kw">table</span>(<span class="st">&quot;Predictions&quot;</span>=<span class="st"> </span>pred,  <span class="st">&quot;Actual&quot;</span> =<span class="st"> </span>df.test<span class="op">$</span>class )</code></pre></div>
 <pre><code>##            Actual

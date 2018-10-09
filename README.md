@@ -43,7 +43,11 @@ Estimate the page rank for the given directed graph representing web of six page
 
 ## 10th September 2018 [Exercise 7](http://rpubs.com/jacobjohn2016/WMAssessment4)
 1. Naive Bayes
+    * [Dataset](https://archive.ics.uci.edu/ml/datasets/Cervical+cancer+%28Risk+Factors%29)
+    * Find accuracy, AUC and confusion matrix
 2. Multinomial Naive Bayes
+3. Apriori
+4. K-means
 
 ## Authors
 
