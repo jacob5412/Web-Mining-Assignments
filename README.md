@@ -41,6 +41,10 @@ Estimate the page rank for the given directed graph representing web of six page
 3. Page Rank
 4. Goloumb Coding
 
+## 10th September 2018 [Exercise 7](http://rpubs.com/jacobjohn2016/WMAssessment4)
+1. Naive Bayes
+2. Multinomial Naive Bayes
+
 ## Authors
 
 * **Jacob John** - *Initial work* - [jacobjohn2016](github.com/jacobjohn2016/)
