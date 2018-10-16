@@ -49,7 +49,7 @@ Estimate the page rank for the given directed graph representing web of six page
 3. Apriori
 4. K-means
 
-## 16th October 2018
+## 16th October 2018 [Exercise 8](http://rpubs.com/jacobjohn2016/Assessment5-1)
 1. Construction of a directed graph and undirected graph with nodes(plot function)
 2. Colour the edges and nodes(plot)
 3. Name the nodes
