@@ -1,0 +1,197 @@
+---
+title: "Assessment 5: Part 1"
+output: statsr:::statswithr_lab
+author: Jacob John
+---
+
+<div id="instructions">
+Complete all **Exercises**, and submit answers to **VtopBeta**
+</div>
+
+## Packages
+
+```{r}
+## Load package
+library(igraph)
+ 
+```
+
+## Construction of a directed graph and undirected graph with nodes
+```{r}
+# undirected graph with three edges
+g1 <- graph( edges=c(1,2, 2,3, 3, 1), n=3, directed=F ) 
+plot(g1)
+class(g1)
+
+# Now with 10 vertices, and directed by default:
+g2 <- graph( edges=c(1,2, 2,3, 3, 1), n=10 )
+plot(g2)
+g2
+
+```
+
+## Name the nodes
+```{r}
+# Nodes as names
+g3 <- graph( c("John", "Jim", "Jim", "Jill", "Jill", "John")) # named vertices
+plot(g3)
+g3
+```
+
+## Color the edges and nodes
+```{r}
+# Printing the edges with color
+g4 <- graph( c("John", "Jim", "Jim", "Jack", "Jim", "Jack", "John", "John"),
+             isolates=c("Jesse", "Janis", "Jennifer", "Justin") ) 
+plot(g4, edge.arrow.size=.5, vertex.color="gold", vertex.size=15, 
+     vertex.frame.color="gray", vertex.label.color="black", 
+     vertex.label.cex=0.8, vertex.label.dist=2, edge.curved=0.2) 
+```
+
+##  Print adjacency matrix of undirected graph
+```{r}
+# Since g1 was the undirected graph
+g1[]
+```
+
+## Add few extra nodes to the network and name them as well
+```{r}
+E(g4) # The edges of the object
+V(g4) # The vertices of the object
+g4[] # Examining adjancency matrix
+g4[1,] # Examining first row
+
+# Adding an extra node
+g4 <- g4 %>% 
+        add_vertices(nv = 1, color = "red", name = "Tim") %>%
+        add_edges(c("Tim", "John"))
+plot(g4, edge.arrow.size=.5, vertex.size=15, 
+     vertex.frame.color="gray", vertex.label.color="black", 
+     vertex.label.cex=0.8, vertex.label.dist=2, edge.curved=0.2) 
+
+# Add attributes to the network, vertices, or edges:
+V(g4)$name # automatically generated when we created the network.
+V(g4)$gender <- c("male", "male", "male", "male", "female", "female", "male")
+E(g4)$type <- "email" # Edge attribute, assign "email" to all edges
+E(g4)$weight <- 10    # Edge weight, setting all existing edges to 10
+
+# Examine attributes
+edge_attr(g4) 
+vertex_attr(g4)
+graph_attr(g4)
+
+# Plotting final graph
+plot(g4, edge.arrow.size=.5, vertex.label.color="black", vertex.label.dist=1.5,
+     vertex.color=c( "pink", "skyblue")[1+(V(g4)$gender=="male")] ) 
+```
+
+
+## Print diameter of graph
+```{r}
+net.bg <- sample_pa(80) 
+V(net.bg)$size <- 8
+V(net.bg)$frame.color <- "white"
+V(net.bg)$color <- "orange"
+V(net.bg)$label <- "" 
+E(net.bg)$arrow.mode <- 0
+plot(net.bg)
+plot(net.bg, layout=layout_randomly)
+
+#Diameter of graph
+diameter(net.bg, directed=F, weights=NA)
+```
+
+## Find degree, in-degrees and out degrees of all
+nodes
+```{r}
+deg <- degree(net.bg, mode="all")
+deg
+
+#In degree
+in_deg <- degree(net.bg, mode="in")
+in_deg
+
+#Out Degree
+out_deg <- degree(net.bg, mode="out")
+out_deg
+
+#Histogram of node degree
+hist(deg, breaks=1:vcount(net.bg)-1, main="Histogram of node degree")
+
+#Plotting graph based on degree
+plot(net.bg, vertex.size=deg*3)
+```
+
+## Find density of any nodes
+```{r}
+edge_density(net.bg, loops=F)
+ecount(net.bg)/(vcount(net.bg)*(vcount(net.bg)-1)) #for a directed network
+```
+
+## Find closeness centrality of all nodes
+```{r}
+#Degree (number of ties)
+degree(net.bg, mode="in")
+centr_degree(net.bg, mode="in", normalized=T)
+
+#Closeness (centrality based on distance to others in the graph)
+closeness(net.bg, mode="all", weights=NA) 
+centr_clo(net.bg, mode="all", normalized=T) 
+
+#Eigenvector (centrality proportional to the sum of connection centralities)
+eigen_centrality(net.bg, directed=T, weights=NA)
+centr_eigen(net.bg, directed=T, normalized=T)
+
+#Betweeness
+betweenness(net.bg, directed=T, weights=NA)
+edge_betweenness(net.bg, directed=T, weights=NA)
+centr_betw(net.bg, directed=T, normalized=T)
+```
+
+## Hubs and Authorities
+```{r}
+hs <- hub_score(net.bg, weights=NA)$vector
+as <- authority_score(net.bg, weights=NA)$vector
+
+par(mfrow=c(1,2))
+ plot(net.bg, vertex.size=hs*50, main="Hubs")
+ plot(net.bg, vertex.size=as*30, main="Authorities")
+```
+
+# Social circles: Facebook
+[Source](https://snap.stanford.edu/data/ego-Facebook.html)
+```{r}
+## Read in edges information
+igraphDat <- read.graph(file = "./facebook/0.edges", directed = FALSE)
+## Simplify to remove duplications and from-self-to-self loops
+igraphDat <- simplify(igraphDat, remove.multiple = TRUE, remove.loops = TRUE)
+## Give numbers
+V(igraphDat)$label <- seq_along(V(igraphDat))
+
+## Community structure detection based on edge betweenness
+communityEdgeBetwn <- edge.betweenness.community(igraphDat)
+## Average path length between any two given nodes
+(averagePathLength <- average.path.length(igraphDat))
+## Check the transitivity of a graph (probability that the adjacent vertices of a vertex are connected)
+(transitivityDat <- transitivity(igraphDat, type = "localaverage",isolates = "zero"))
+```
+
+```{r, fig.width=10,fig.height=13,warning=FALSE}
+## Set the seed to get the same result
+set.seed("20140513")
+## Add community indicating background colors
+plot(igraphDat,
+     vertex.color = communityEdgeBetwn$membership, vertex.size = log(degree(igraphDat) + 1),
+     mark.groups = by(seq_along(communityEdgeBetwn$membership), communityEdgeBetwn$membership, invisible))
+## Annotate
+title("Stanford Facebook data", 
+      sub = "http://snap.stanford.edu/data/egonets-Facebook.html")
+text(x = -1, y = -1, 
+     labels = sprintf("Average path length: %.2f\nTransitivity:%.2f",
+                      averagePathLength, transitivityDat))
+```
+
+```{r}
+deg2 <- degree(igraphDat, mode="all")
+hist(deg2, breaks=1:vcount(net.bg)-1, main="Histogram of node degree")
+```

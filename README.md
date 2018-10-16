@@ -49,6 +49,20 @@ Estimate the page rank for the given directed graph representing web of six page
 3. Apriori
 4. K-means
 
+## 16th October 2018
+1. Construction of a directed graph and undirected graph with nodes(plot function)
+2. Colour the edges and nodes(plot)
+3. Name the nodes
+4. Print adjacency matrix of undirected graph
+5. Add few extra nodes to the network and name them as well
+6. Print diameter of the graph
+7. Find degree of all nodes
+8. Find in-degrees of all nodes and out degrees of all nodes
+9. Find density of any nodes
+10. Find closeness centrality of all nodes
+11. Create network from a given data set. You can choose any one of the data sets from the following [link](https://snap.stanford.edu/data/)
+12. Prepare a histogram of ‘Frequency' vs 'Degree of Vertices'
+
 ## Authors
 
 * **Jacob John** - *Initial work* - [jacobjohn2016](github.com/jacobjohn2016/)
