@@ -63,6 +63,13 @@ Estimate the page rank for the given directed graph representing web of six page
 11. Create network from a given data set. You can choose any one of the data sets from the following [link](https://snap.stanford.edu/data/)
 12. Prepare a histogram of ‘Frequency' vs 'Degree of Vertices'
 
+## Digital Assignment 1
+1. [Convolution Neural Network (CNN) for Image Recognition]()
+2. [Convolution Neural Network (CNN) for Optical Character Recognition (OCR)]()
+
+## Digital Assignment 2
+[Deep Neural Network for predicting housing prices]()
+
 ## Authors
 
 * **Jacob John** - *Initial work* - [jacobjohn2016](github.com/jacobjohn2016/)
