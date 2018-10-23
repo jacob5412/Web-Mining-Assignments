@@ -64,11 +64,11 @@ Estimate the page rank for the given directed graph representing web of six page
 12. Prepare a histogram of ‘Frequency' vs 'Degree of Vertices'
 
 ## Digital Assignment 1
-1. [Convolution Neural Network (CNN) for Image Recognition]()
-2. [Convolution Neural Network (CNN) for Optical Character Recognition (OCR)]()
+1. [Convolution Neural Network (CNN) for Image Recognition](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/Deep-Learning-CNN-for-Image-Recognition/output-md/ConvolutionalNeuralNetwork-Image_Recognition/ConvolutionalNeuralNetwork-Image_Recognition.md)
+2. [Convolution Neural Network (CNN) for Optical Character Recognition (OCR)](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/Deep-Learning-CNN-for-Image-Recognition/output-md/ConvolutionalNeuralNetwork-OCR/ConvolutionalNeuralNetwork-OCR.md)
 
 ## Digital Assignment 2
-[Deep Neural Network for predicting housing prices]()
+[Deep Neural Network for predicting housing prices](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/DNN_Intro_python/DNN_House_prices_kaggle.ipynb)
 
 ## Authors
 
