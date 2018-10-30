@@ -70,6 +70,8 @@ Estimate the page rank for the given directed graph representing web of six page
 ## Digital Assignment 2
 [Deep Neural Network for predicting housing prices](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/DNN_Intro_python/DNN_House_prices_kaggle.ipynb)
 
+## [Final Exam](https://github.com/jacobjohn2016/Web-Mining-Assignments/blob/master/Final_Exam/final_submission.ipynb)
+
 ## Authors
 
 * **Jacob John** - *Initial work* - [jacobjohn2016](github.com/jacobjohn2016/)
